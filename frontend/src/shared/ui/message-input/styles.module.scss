@@ -1,0 +1,58 @@
+@use '../styles/mixins' as m;
+@use '../styles/variables' as v;
+
+.root {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.textarea {
+  @include m.field-base;
+  @include m.field-placeholder;
+  flex: 1;
+  resize: none;
+  padding: 0.68rem 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+  line-height: 1rem;
+  min-height: 40px;
+  -webkit-appearance: none;
+  appearance: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.button {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: v.$radius-base;
+  cursor: pointer;
+  transition:
+    opacity 0.15s ease,
+    transform 0.1s ease;
+
+  &:hover:not(:disabled) {
+    opacity: v.$opacity-hover;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: v.$opacity-disabled;
+    cursor: not-allowed;
+  }
+}

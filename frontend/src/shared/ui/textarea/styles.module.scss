@@ -1,0 +1,40 @@
+@use '../styles/mixins' as m;
+
+.wrapper {
+  position: relative;
+  width: var(--ui-width, fit-content);
+}
+
+.textarea {
+  @include m.field-base;
+  @include m.field-placeholder;
+  line-height: 1.5;
+}
+
+.required {
+  color: var(--color-red);
+}
+
+.textareaTitle,
+.textareaDescription {
+  @include m.field-label;
+}
+
+.textareaTitle {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.textareaDescription {
+  margin-top: 0.25rem;
+}
+
+.size_s {
+  height: 50px;
+  padding: 0 0.25rem;
+}
+
+.size_m {
+  height: 70px;
+  padding: 0.5rem;
+}

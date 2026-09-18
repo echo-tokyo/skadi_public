@@ -1,0 +1,30 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  box-shadow: var(--box-shadow);
+  background-color: var(--color-white);
+
+  @media (max-width: 600px) {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+.rightItems {
+  display: flex;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-gray-light);
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  @media (max-width: 600px) {
+    width: 36px;
+    height: 36px;
+  }
+}

@@ -1,0 +1,55 @@
+@use 'variables' as v;
+
+@mixin field-base {
+  display: block;
+  border: 1px solid var(--color-gray-light);
+  background-color: var(--color-gray-ultra-light);
+  font-family: v.$font-family-base;
+  color: var(--color-secondary);
+  font-size: v.$font-size-body;
+  width: var(--ui-width, 16rem);
+  border-radius: v.$radius-base;
+  outline: none;
+  min-width: 14rem;
+  transition:
+    border-color var(--transition-duration) var(--transition-timing),
+    box-shadow var(--transition-duration) var(--transition-timing);
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-gray-hover);
+  }
+
+  &:disabled {
+    opacity: v.$opacity-disabled;
+    cursor: not-allowed;
+    transition: opacity var(--transition-duration) var(--transition-timing);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-red);
+  }
+}
+
+@mixin field-placeholder {
+  &::placeholder {
+    font-family: v.$font-family-base;
+    font-weight: 400;
+    color: var(--color-gray);
+    transition:
+      opacity var(--transition-duration) var(--transition-timing),
+      transform var(--transition-duration) var(--transition-timing);
+  }
+
+  &:focus::placeholder {
+    opacity: 0.5;
+    transform: translateX(4px);
+  }
+}
+
+@mixin field-label {
+  margin: 0;
+  font-size: v.$font-size-label;
+  color: var(--color-secondary);
+  font-weight: 400;
+  transition: color var(--transition-duration) var(--transition-timing);
+}

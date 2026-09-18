@@ -1,0 +1,27 @@
+@mixin mobile {
+  @media (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin custom-scrollbar {
+  ::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+    background: transparent;
+    z-index: 12;
+    overflow: visible;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    width: 4px;
+    background-color: rgb(211, 211, 211);
+    border-radius: 100px;
+    z-index: 12;
+    background-clip: padding-box;
+    transition: background-color 0.32s ease-in-out;
+    margin: 4px;
+    min-height: 32px;
+    min-width: 32px;
+  }
+}

@@ -1,0 +1,39 @@
+.comment {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.left {
+  align-items: flex-start;
+}
+
+.right {
+  align-items: flex-end;
+}
+
+.sender {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-secondary);
+}
+
+.bubble {
+  background-color: var(--color-gray-ultra-light);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-secondary);
+  white-space: pre-wrap;
+  max-width: 90%;
+  min-width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time {
+  white-space: nowrap;
+  align-self: flex-end;
+}

@@ -1,0 +1,26 @@
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.linkWrapper {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.link {
+  transition: color var(--transition-duration-fast) var(--transition-timing);
+
+  &:hover {
+    color: var(--color-primary) !important;
+  }
+}

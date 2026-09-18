@@ -1,0 +1,5 @@
+export { default } from './components/FileField'
+export { default as Dropzone } from './components/Dropzone'
+export { default as FileItem } from './components/FileItem'
+export type { IFileFieldProps } from './components/FileField'
+export type { FileDisplayItem } from './types/types'

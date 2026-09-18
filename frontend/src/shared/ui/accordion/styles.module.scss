@@ -1,0 +1,44 @@
+.accordion {
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-gray-light);
+  transition: border-color var(--transition-duration) var(--transition-timing);
+  &:hover {
+    border-color: var(--color-gray-hover);
+  }
+}
+
+.accordionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.accordionContent {
+  padding: 1rem;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-duration) var(--transition-timing);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

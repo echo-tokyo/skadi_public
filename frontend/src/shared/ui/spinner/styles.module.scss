@@ -1,0 +1,44 @@
+@use '../styles/variables' as v;
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 10;
+  border-radius: v.$radius-base;
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  border-style: solid;
+  border-color: var(--color-gray-ultra-light);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+
+  &.s {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+
+  &.m {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

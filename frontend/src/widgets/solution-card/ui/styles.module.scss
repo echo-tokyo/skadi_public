@@ -1,0 +1,93 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
+.content {
+  display: flex;
+  gap: 1rem;
+  height: 100%;
+  overflow: hidden;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.5rem;
+  min-height: 0;
+  overflow-y: auto;
+
+  > .card:last-child {
+    flex: 1 1 auto;
+  }
+}
+
+.sidebar {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.card {
+  border: 1px solid var(--color-gray-light);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: border-color var(--transition-duration) var(--transition-timing);
+
+  &:hover {
+    border-color: var(--color-gray-hover);
+  }
+
+  &Fields,
+  &StudentFields,
+  &MaterialsFields {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+  }
+
+  &MaterialsFields {
+    padding-bottom: 0.25rem;
+  }
+
+  &AnswerFields {
+    display: flex;
+    flex-direction: column;
+    align-items: normal;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+
+  &AnswerFiles {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .content {
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 0.5rem;
+  }
+
+  .cards {
+    flex: none;
+  }
+
+  // .cards {
+  //   flex: 2;
+
+  //   > .card:last-child {
+  //     flex: none;
+  //   }
+  // }
+}

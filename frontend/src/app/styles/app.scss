@@ -1,0 +1,32 @@
+@use './mixins.scss';
+@use './variables.scss';
+
+body,
+html,
+#root {
+  height: 100%;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--color-secondary);
+  background-color: #fffdf7;
+  margin: 0;
+  overflow: hidden;
+  @include mixins.custom-scrollbar();
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 0 2rem;
+  height: calc(100% - var(--header-height));
+  nav {
+    margin-top: 1rem;
+  }
+
+  @include mixins.mobile {
+    margin: 0 0.75rem;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}

@@ -1,0 +1,62 @@
+.fluid {
+  --ui-width: 100%;
+}
+
+.size_s {
+  height: 32px;
+  padding: 0 1rem;
+}
+
+.size_m {
+  height: 40px;
+  padding: 0 1rem;
+}
+
+.primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.secondary {
+  background-color: var(--color-gray-ultra-light);
+  color: var(--color-secondary);
+  &:hover:not(:disabled) {
+    background-color: var(--color-gray-light);
+  }
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--color-secondary);
+  &:hover:not(:disabled) {
+    background-color: var(--color-gray-ultra-light);
+  }
+}
+
+.inverted {
+  background-color: var(--color-gray-ultra-light);
+  color: var(--color-red);
+  &:hover:not(:disabled) {
+    background-color: var(--color-gray-light);
+  }
+}
+
+.white {
+  background-color: var(--color-white);
+  color: var(--color-secondary);
+  &:hover:not(:disabled) {
+    background-color: var(--color-gray-light);
+  }
+}
+
+.invalidText {
+  --input-text-color: var(--color-red);
+  p {
+    color: var(--input-text-color);
+  }
+}
+
+.invalid {
+  --input-border-color: var(--color-red);
+  border: 1px solid var(--input-border-color);
+}

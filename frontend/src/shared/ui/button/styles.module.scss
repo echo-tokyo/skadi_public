@@ -1,0 +1,54 @@
+@use '../styles/variables' as v;
+
+.button {
+  position: relative;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  width: var(--ui-width, fit-content);
+  border-radius: v.$radius-base;
+  font-size: v.$font-size-body;
+  font-family: v.$font-family-base;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    opacity: v.$opacity-hover;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: v.$opacity-disabled;
+  }
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.spinnerOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  --ui-width: auto;
+  aspect-ratio: 1 / 1;
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    line-height: 0;
+  }
+}

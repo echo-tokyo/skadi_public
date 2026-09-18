@@ -1,0 +1,128 @@
+@use '../../styles/mixins' as m;
+@use '../../styles/variables' as v;
+
+.wrapper {
+  position: relative;
+  width: var(--ui-width, fit-content);
+}
+
+.icon {
+  display: block;
+}
+
+.inputHidden {
+  display: none;
+}
+
+.size_s {
+  height: 50px;
+  padding: 0 0.25rem;
+}
+
+.size_m {
+  height: 70px;
+  padding: 0.5rem;
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--color-gray-light);
+  border-radius: v.$radius-base;
+  background-color: var(--color-gray-ultra-light);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color var(--transition-duration) var(--transition-timing),
+    background-color var(--transition-duration) var(--transition-timing);
+
+  &:hover:not(&:disabled) {
+    border-color: var(--color-gray-hover);
+  }
+
+  &:focus-visible {
+    border: 2px dashed var(--color-gray-hover);
+    outline: none;
+  }
+}
+
+.dropzoneInvalid {
+  border-color: var(--color-red);
+}
+
+.dropzoneDragging {
+  border-color: var(--color-primary);
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 6%,
+    var(--color-white)
+  );
+  color: var(--color-primary);
+}
+
+.dropzoneDisabled {
+  opacity: v.$opacity-disabled;
+  cursor: not-allowed;
+}
+
+.fileList {
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.5rem 0 1rem;
+  height: 40px;
+  background-color: var(--color-gray-ultra-light);
+  border: 1px solid var(--color-gray-light);
+  border-radius: v.$radius-base;
+  max-width: var(--ui-width, 16rem);
+  transition:
+    border-color var(--transition-duration) var(--transition-timing),
+    box-shadow var(--transition-duration) var(--transition-timing);
+
+  &:hover {
+    border-color: var(--color-gray-hover);
+  }
+}
+
+.fileItemName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.title,
+.description {
+  @include m.field-label;
+}
+
+.title {
+  display: block;
+  margin-bottom: 0.25rem !important;
+}
+
+.required {
+  color: var(--color-red);
+}
+
+.description {
+  margin-top: 0.25rem;
+}
+
+.descriptionError {
+  @include m.field-label;
+  margin-top: 0.25rem;
+  color: var(--color-red);
+}

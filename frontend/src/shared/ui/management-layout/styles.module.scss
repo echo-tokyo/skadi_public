@@ -1,0 +1,35 @@
+.managementActions {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.managementList {
+  margin-top: 2rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+
+  & > *:not(:last-child):not(:nth-last-child(2)) {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.cardActions {
+  display: flex;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .managementActions {
+    margin-top: 1rem;
+    overflow-x: auto;
+  }
+
+  .managementList {
+    margin-top: 1rem;
+  }
+}
