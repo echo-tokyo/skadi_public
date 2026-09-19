@@ -1,0 +1,1819 @@
+basePath: /api/v1
+consumes:
+- application/json
+definitions:
+  entity.Class:
+    properties:
+      id:
+        description: class id
+        type: integer
+      name:
+        description: class name
+        type: string
+      schedule:
+        description: class schedule
+        type: string
+      students:
+        description: student objects list
+        items:
+          $ref: '#/definitions/entity.Profile'
+        type: array
+      teacher:
+        allOf:
+        - $ref: '#/definitions/entity.Profile'
+        description: teacher object
+    required:
+    - id
+    - name
+    type: object
+  entity.Comment:
+    properties:
+      created_at:
+        description: datetime the message was created
+        type: string
+      id:
+        description: comment ID
+        type: integer
+      message:
+        description: message text
+        type: string
+      role:
+        description: role (student or teacher)
+        type: string
+    required:
+    - created_at
+    - id
+    - message
+    - role
+    type: object
+  entity.Contact:
+    properties:
+      email:
+        type: string
+      phone:
+        type: string
+    type: object
+  entity.File:
+    properties:
+      id:
+        description: file ID
+        type: integer
+      mime_type:
+        description: file MIME-type
+        type: string
+      name:
+        description: filename
+        type: string
+      size:
+        description: file size in bytes
+        type: integer
+    required:
+    - id
+    - mime_type
+    - name
+    - size
+    type: object
+  entity.Pagination:
+    properties:
+      page:
+        description: current page
+        example: 1
+        type: integer
+      pages:
+        description: total pages amount
+        example: 7
+        type: integer
+      per_page:
+        default: 10
+        description: per page objects
+        example: 5
+        type: integer
+      total:
+        description: total objects amount
+        example: 32
+        type: integer
+    required:
+    - page
+    - pages
+    - per_page
+    - total
+    type: object
+  entity.Profile:
+    properties:
+      address:
+        description: user address
+        type: string
+      contact:
+        $ref: '#/definitions/entity.Contact'
+      extra:
+        description: extra data (for admin only)
+        type: string
+      fullname:
+        description: user full name
+        type: string
+      id:
+        description: profile id (equals to user id)
+        type: integer
+      parent_contact:
+        $ref: '#/definitions/entity.Contact'
+    required:
+    - fullname
+    type: object
+  entity.Solution:
+    properties:
+      answer:
+        description: solution text answer
+        type: string
+      files:
+        description: solution files
+        items:
+          $ref: '#/definitions/entity.File'
+        type: array
+      grade:
+        description: solution grade
+        type: string
+      id:
+        description: solution id
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/entity.Status'
+        description: status object
+      student:
+        allOf:
+        - $ref: '#/definitions/entity.Profile'
+        description: student object
+      task:
+        allOf:
+        - $ref: '#/definitions/entity.Task'
+        description: task object
+      updated_at:
+        description: last-update datetime of solution
+        type: string
+    required:
+    - id
+    - status
+    - task
+    type: object
+  entity.Status:
+    properties:
+      id:
+        description: status id
+        type: integer
+      name:
+        description: status name
+        type: string
+    required:
+    - name
+    type: object
+  entity.Task:
+    properties:
+      description:
+        description: task description
+        type: string
+      files:
+        description: task files
+        items:
+          $ref: '#/definitions/entity.File'
+        type: array
+      id:
+        description: task id
+        type: integer
+      teacher:
+        allOf:
+        - $ref: '#/definitions/entity.Profile'
+        description: teacher object
+      title:
+        description: task title
+        type: string
+    required:
+    - id
+    - title
+    type: object
+  entity.TaskWithStudents:
+    properties:
+      students:
+        description: students solving this task
+        items:
+          $ref: '#/definitions/entity.Profile'
+        type: array
+      task:
+        allOf:
+        - $ref: '#/definitions/entity.Task'
+        description: task object
+    required:
+    - task
+    type: object
+  entity.User:
+    properties:
+      class:
+        allOf:
+        - $ref: '#/definitions/entity.Class'
+        description: student's class
+      id:
+        description: user id
+        type: integer
+      profile:
+        allOf:
+        - $ref: '#/definitions/entity.Profile'
+        description: user profile
+      role:
+        description: admin, teacher or student
+        type: string
+      username:
+        description: user username
+        type: string
+    required:
+    - id
+    - profile
+    - role
+    - username
+    type: object
+  entity.UserClaims:
+    properties:
+      id:
+        description: user ID
+        type: integer
+      role:
+        description: admin, teacher or student
+        type: string
+    type: object
+  internal_app_class_controller_http_v1.updateBody:
+    description: updateBody represents a data to update class.
+    properties:
+      name:
+        description: new class name
+        example: F26-2
+        maxLength: 50
+        type: string
+      schedule:
+        description: new class schedule
+        example: пн 15:00-16:00
+        maxLength: 100
+        type: string
+      students:
+        description: IDs of students (updated list) in the class
+        items:
+          type: integer
+        type: array
+      teacher_id:
+        description: new teacher id
+        example: 5
+        type: integer
+    type: object
+  internal_app_user_controller_http_v1.updateBody:
+    description: updateBody represents a data to update user and profile.
+    properties:
+      class_id:
+        description: class id (for students)
+        example: 3
+        type: integer
+      password:
+        description: user password
+        example: qwerty123
+        maxLength: 40
+        minLength: 8
+        type: string
+      profile:
+        allOf:
+        - $ref: '#/definitions/v1.profileBody'
+        description: user profile
+    required:
+    - profile
+    type: object
+  v1.authBody:
+    description: authBody represents a data for user auth (log in).
+    properties:
+      password:
+        description: user password
+        example: qwerty123
+        maxLength: 40
+        minLength: 8
+        type: string
+      username:
+        description: user username
+        example: user1
+        maxLength: 50
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  v1.classBody:
+    description: classBody represents a data with class.
+    properties:
+      name:
+        description: class name
+        example: B26-1
+        maxLength: 50
+        type: string
+      schedule:
+        description: class schedule
+        example: сб 18:00-19:00
+        maxLength: 100
+        type: string
+      students:
+        description: student ID list
+        items:
+          type: integer
+        type: array
+      teacher_id:
+        description: teacher id
+        example: 2
+        type: integer
+    required:
+    - name
+    type: object
+  v1.commentBody:
+    description: commentBody represents a data with comment.
+    properties:
+      message:
+        description: text message
+        example: Добрый день. Подскажите, пожалуйста...
+        type: string
+    required:
+    - message
+    type: object
+  v1.contactBody:
+    description: contactBody represents a data with profile contact.
+    properties:
+      email:
+        example: ivanovvp@gmail.com
+        maxLength: 50
+        type: string
+      phone:
+        example: "88005553535"
+        maxLength: 15
+        type: string
+    type: object
+  v1.createTaskOut:
+    description: createTaskOut represents a task data with solutions.
+    properties:
+      solutions:
+        description: task solutions
+        items:
+          $ref: '#/definitions/entity.Solution'
+        type: array
+      task:
+        allOf:
+        - $ref: '#/definitions/entity.Task'
+        description: task object
+    required:
+    - task
+    type: object
+  v1.exampleData:
+    description: exampleData represents an output data for example endpoints.
+    properties:
+      access:
+        description: endpoint access description
+        example: student only
+        type: string
+      handler:
+        description: handler name
+        example: student
+        type: string
+      user_claims:
+        allOf:
+        - $ref: '#/definitions/entity.UserClaims'
+        description: user claims (for endpoints with auth restriction)
+    type: object
+  v1.listClassOut:
+    description: listClassOut represents a classes list and pagination params.
+    properties:
+      data:
+        description: classes list
+        items:
+          $ref: '#/definitions/entity.Class'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.listCommentOut:
+    description: listCommentOut represents a comment list and pagination params.
+    properties:
+      data:
+        description: comment list
+        items:
+          $ref: '#/definitions/entity.Comment'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.listSolutionOut:
+    description: listSolutionOut represents a solution list data.
+    properties:
+      data:
+        description: solutions list
+        items:
+          $ref: '#/definitions/entity.Solution'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.listTaskOut:
+    description: listTaskOut represents a task list data.
+    properties:
+      data:
+        description: tasks list
+        items:
+          $ref: '#/definitions/entity.TaskWithStudents'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.listUserOut:
+    description: listUserOut represents a users list and pagination params.
+    properties:
+      data:
+        description: users list
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.profileBody:
+    description: profileBody represents a data with user profile.
+    properties:
+      address:
+        description: user address
+        example: 3-я ул.Строителей д. 25
+        maxLength: 255
+        type: string
+      contact:
+        allOf:
+        - $ref: '#/definitions/v1.contactBody'
+        description: user contact info
+      extra:
+        description: extra data (for admin only)
+        example: только для админов
+        type: string
+      fullname:
+        description: user full name
+        example: Иванов Василий Петрович
+        maxLength: 150
+        type: string
+      parent_contact:
+        allOf:
+        - $ref: '#/definitions/v1.contactBody'
+        description: parent contact info (for students)
+    required:
+    - fullname
+    type: object
+  v1.solutionOut:
+    description: solutionOut represents a solution data with students (solving the
+      same task).
+    properties:
+      other_students:
+        description: other students solving the same task
+        items:
+          $ref: '#/definitions/entity.Profile'
+        type: array
+      solution:
+        allOf:
+        - $ref: '#/definitions/entity.Solution'
+        description: solution object
+    required:
+    - solution
+    type: object
+  v1.updatePasswordAdminBody:
+    description: updatePasswordAdminBody represents a data to update user password
+      by admin.
+    properties:
+      new:
+        description: new password for user
+        example: ytrewq321
+        maxLength: 40
+        minLength: 8
+        type: string
+    required:
+    - new
+    type: object
+  v1.updatePasswordBody:
+    description: updatePasswordBody represents a data to update user password by the
+      user himself.
+    properties:
+      new:
+        description: new user password
+        example: ytrewq321
+        maxLength: 40
+        minLength: 8
+        type: string
+      old:
+        description: old user password
+        example: qwerty123
+        maxLength: 40
+        minLength: 8
+        type: string
+    required:
+    - new
+    - old
+    type: object
+  v1.updateSolutionBody:
+    description: updateSolutionBody represents a data with optional body to update
+      solution.
+    properties:
+      answer:
+        description: new answer (student only)
+        example: ООП - это объектно-ориентированное программирование
+        type: string
+      delete_files:
+        description: IDs of files to delete from the task (student only)
+        items:
+          type: integer
+        type: array
+      grade:
+        description: new grade (teacher only)
+        example: 5+
+        maxLength: 5
+        type: string
+      status_id:
+        description: new status ID (student and teacher)
+        example: 2
+        type: integer
+    type: object
+  v1.userBody:
+    description: userBody represents a data with user.
+    properties:
+      class_id:
+        description: class id (for students)
+        example: 3
+        type: integer
+      password:
+        description: user password
+        example: qwerty123
+        maxLength: 40
+        minLength: 8
+        type: string
+      profile:
+        allOf:
+        - $ref: '#/definitions/v1.profileBody'
+        description: user profile
+      role:
+        description: user role (teacher or student)
+        enum:
+        - teacher
+        - student
+        example: teacher
+        type: string
+      username:
+        description: user username
+        example: user1
+        maxLength: 50
+        type: string
+    required:
+    - password
+    - profile
+    - role
+    - username
+    type: object
+host: 127.0.0.1:8000
+info:
+  contact: {}
+  description: HTTP API онлайн-сервиса для IT-школы.
+  title: skadi API
+  version: 1.0.0
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Вход для существующего юзера по логину и паролю.
+      operationId: auth-login
+      parameters:
+      - description: authBody
+        in: body
+        name: authBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.authBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: неверный логин или пароль
+      summary: Вход для юзера.
+      tags:
+      - auth
+  /auth/private/logout:
+    post:
+      description: Выход юзера (помещение refresh токена юзера в черный список).
+      operationId: auth-private-logout
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: токен в черном списке
+      security:
+      - JWTRefresh: []
+      summary: Выход юзера.
+      tags:
+      - auth
+  /auth/private/obtain:
+    post:
+      description: Получение нового access токена по данному refresh токену из cookie.
+      operationId: auth-private-obtain
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: токен в черном списке
+      security:
+      - JWTRefresh: []
+      summary: Получение access токена.
+      tags:
+      - auth
+  /class:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка групп со всеми данными (ID и имена препода и учеников).
+      operationId: class-list
+      parameters:
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: substring to filter classes by name (case-insensitive)
+        example: F26
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listClassOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка групп.
+      tags:
+      - class
+    post:
+      consumes:
+      - application/json
+      description: Создание новой группы со всеми данными и включение в неё переданных
+        студентов.
+      operationId: class-create
+      parameters:
+      - description: classBody
+        in: body
+        name: classBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.classBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Class'
+        "400":
+          description: неверный ученик | неверный преподаватель | преподаватель не
+            найден
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "409":
+          description: группа с введенным названием уже существует
+      security:
+      - JWTAccess: []
+      summary: Создание новой группы. [Только админ]
+      tags:
+      - class
+  /class/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление группы по её id.
+      operationId: class-delete
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Удаление группы по id. [Только админ]
+      tags:
+      - class
+    get:
+      consumes:
+      - application/json
+      description: Получение всех данных о группе с инфой о преподе и учениках (ID
+        и полные имена).
+      operationId: class-read
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Class'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: группа не найдена
+      security:
+      - JWTAccess: []
+      summary: Получение группы по id.
+      tags:
+      - class
+    patch:
+      consumes:
+      - application/json
+      description: Частичное обновление группы (только переданные поля) по её id.
+      operationId: class-update
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: updateBody
+        in: body
+        name: updateBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal_app_class_controller_http_v1.updateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Class'
+        "400":
+          description: неверный ученик | неверный преподаватель | преподаватель не
+            найден
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: группа не найдена
+      security:
+      - JWTAccess: []
+      summary: Обновление группы по id. [Только админ]
+      tags:
+      - class
+  /class/short:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка групп (только ID и названия).
+      operationId: class-list-short
+      parameters:
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: substring to filter classes by name (case-insensitive)
+        example: F26
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Class'
+            type: array
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка групп (кратко).
+      tags:
+      - class
+  /example/admin:
+    get:
+      description: Проверочный эндпоинт с доступом только для админов.
+      operationId: example-admin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: Юзер не админ, доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Проверка. [Только админ]
+      tags:
+      - example
+  /example/free:
+    get:
+      consumes:
+      - application/json
+      description: Проверочный эндпоинт с доступом абсолютно всем.
+      operationId: example-free
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+      summary: Проверка. [Все]
+      tags:
+      - example
+  /example/private:
+    get:
+      description: Проверочный эндпоинт с доступом только для авторизованных юзеров.
+      operationId: example-private
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: Юзер не авторизован, доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Проверка. [Только авторизованные]
+      tags:
+      - example
+  /example/student:
+    get:
+      description: Проверочный эндпоинт с доступом только для студентов.
+      operationId: example-student
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: Юзер не студент, доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Проверка. [Только ученик]
+      tags:
+      - example
+  /example/teacher:
+    get:
+      description: Проверочный эндпоинт с доступом только для преподавателей.
+      operationId: example-teacher
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: Юзер не преподаватель, доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Проверка. [Только преподаватель]
+      tags:
+      - example
+  /file/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Загрузка файла по его id.
+      operationId: file-download
+      parameters:
+      - description: ID файла
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: файл
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: файл не найден
+      security:
+      - JWTAccess: []
+      summary: Загрузка файла по id. [Преподаватель и ученик]
+      tags:
+      - file
+  /solution/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление решения (не задания целиком) со всеми файлами решения
+        по его id.
+      operationId: solution-delete
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Удаление решения по id. [Только преподаватель]
+      tags:
+      - solution
+    get:
+      consumes:
+      - application/json
+      description: Получение всех данных о решении задания (с файлами решения) с полной
+        инфой о задании (с файлами задания) и преподе (ID и полное имя), а также со
+        списком учеников, которые тоже выполняют это задание.
+      operationId: solution-read
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.solutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение задания не найдено
+      security:
+      - JWTAccess: []
+      summary: Получение решения задания по id. [Преподаватель и ученик]
+      tags:
+      - solution
+  /solution/{id}/comment:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка комментариев для данного решения задания.
+      operationId: comment-list
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listCommentOut'
+        "400":
+          description: решение задания не найдено
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Получение комментариев под решением задания. [Преподаватель и ученик]
+      tags:
+      - comment
+    post:
+      consumes:
+      - application/json
+      description: Создание комментария от лица преподавателя или ученика для данного
+        решения задания.
+      operationId: comment-create
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: commentBody
+        in: body
+        name: commentBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.commentBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Comment'
+        "400":
+          description: решение задания не найдено
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Создание комментария под решением задания. [Преподаватель и ученик]
+      tags:
+      - comment
+  /solution/for-student:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка решений конкретного ученика.
+      operationId: solution-for-student-list
+      parameters:
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: |-
+          case-insensitive substring to filter data by task title only for students
+          or by task title or student fullname for teacher
+        example: HTML
+        in: query
+        name: search
+        type: string
+      - collectionFormat: multi
+        description: 'solution status IDs (accepted: 1, 2, 3, 4)'
+        example:
+        - 2
+        in: query
+        items:
+          type: integer
+        name: status_id
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listSolutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка решений. [Только ученик]
+      tags:
+      - solution
+  /solution/for-student/{id}:
+    patch:
+      consumes:
+      - multipart/form-data
+      description: 'Частичное обновление решения (только переданные поля: статус,
+        кроме "проверено", ответ, файл ответа) по его id.'
+      operationId: solution-for-student-update
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: new status ID
+        in: formData
+        name: status_id
+        type: integer
+      - description: new answer
+        in: formData
+        name: answer
+        type: string
+      - collectionFormat: multi
+        description: IDs of files to delete from the solution
+        in: formData
+        items:
+          type: integer
+        name: delete_files
+        type: array
+      - collectionFormat: multi
+        description: new solution files
+        in: formData
+        items:
+          type: file
+        name: file
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Solution'
+        "400":
+          description: неверный статус | отправка на проверку возможна только при
+            наличии ответа
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение не найдено
+      security:
+      - JWTAccess: []
+      summary: Обновление решения. [Только ученик]
+      tags:
+      - solution
+  /solution/for-teacher:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка решений для заданий конкретного преподавателя.
+      operationId: solution-for-teacher-list
+      parameters:
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: |-
+          case-insensitive substring to filter data by task title only for students
+          or by task title or student fullname for teacher
+        example: HTML
+        in: query
+        name: search
+        type: string
+      - collectionFormat: multi
+        description: 'solution status IDs (accepted: 1, 2, 3, 4)'
+        example:
+        - 2
+        in: query
+        items:
+          type: integer
+        name: status_id
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listSolutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка решений. [Только преподаватель]
+      tags:
+      - solution
+  /solution/for-teacher/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: 'Частичное обновление решения (только переданные поля: статус -
+        "готово"/"проверено" - и оценка) по его id.'
+      operationId: solution-for-teacher-update
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updateSolutionBody
+        in: body
+        name: updateSolutionBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updateSolutionBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Solution'
+        "400":
+          description: статус не найден
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение не найдено
+      security:
+      - JWTAccess: []
+      summary: Обновление решения. [Только преподаватель]
+      tags:
+      - solution
+  /task:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка заданий (с файлами задания и учениками, которые
+        выполняют это задание) конкретного преподавателя.
+      operationId: task-list
+      parameters:
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: substring to filter data by substring (case-insensitive)
+        example: F26
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listTaskOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка заданий. [Только преподаватель]
+      tags:
+      - task
+    post:
+      consumes:
+      - multipart/form-data
+      description: Создание нового задания (с прикреплением файлов) для переданных
+        учеников и учеников из переданных групп.
+      operationId: task-create
+      parameters:
+      - description: task title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: task description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - collectionFormat: multi
+        description: classes for task solutions (list of class IDs)
+        in: formData
+        items:
+          type: integer
+        name: classes
+        type: array
+      - collectionFormat: multi
+        description: students for task solutions (list of student IDs)
+        in: formData
+        items:
+          type: integer
+        name: students
+        type: array
+      - collectionFormat: multi
+        description: task files
+        in: formData
+        items:
+          type: file
+        name: file
+        type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.createTaskOut'
+        "400":
+          description: неверный ученик | неверный преподаватель | преподаватель не
+            найден
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Создание нового задания. [Только преподаватель]
+      tags:
+      - task
+  /task/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление задания целиком (со всеми его файлами и решениями) по
+        его id.
+      operationId: task-delete
+      parameters:
+      - description: ID задания
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Удаление задания по id. [Только преподаватель]
+      tags:
+      - task
+    get:
+      consumes:
+      - application/json
+      description: Получение всех данных о задании (включая метаданные файлов) и преподе
+        (ID и полное имя), а также списка учеников, которые выполняют это задание.
+      operationId: task-read
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.TaskWithStudents'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: задание не найдено
+      security:
+      - JWTAccess: []
+      summary: Получение задания по id. [Только преподаватель]
+      tags:
+      - task
+    patch:
+      consumes:
+      - multipart/form-data
+      description: 'Частичное обновление задания (только переданные поля: название,
+        описание, привязанные ученики, прикреплённые файлы) по его id.'
+      operationId: task-update
+      parameters:
+      - description: ID задания
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: task title
+        in: formData
+        name: title
+        type: string
+      - description: task description
+        in: formData
+        name: description
+        type: string
+      - collectionFormat: multi
+        description: IDs of students (updated list) for the task
+        in: formData
+        items:
+          type: integer
+        name: students
+        type: array
+      - collectionFormat: multi
+        description: IDs of files to delete from the task
+        in: formData
+        items:
+          type: integer
+        name: delete_files
+        type: array
+      - collectionFormat: multi
+        description: new task files
+        in: formData
+        items:
+          type: file
+        name: file
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.TaskWithStudents'
+        "400":
+          description: неверный ученик
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: задание не найдено
+      security:
+      - JWTAccess: []
+      summary: Обновление задания. [Только преподаватель]
+      tags:
+      - task
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка юзеров со всеми данными (с настраиваемой пагинацией).
+      operationId: user-list
+      parameters:
+      - description: return only class-free students (only if param role=student)
+        example: true
+        in: query
+        name: free
+        type: boolean
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - collectionFormat: multi
+        description: 'user roles (accepted: "teacher", "student")'
+        example:
+        - student
+        in: query
+        items:
+          type: string
+        name: role
+        type: array
+      - description: substring to filter users by username and fullname (case-insensitive)
+        example: иванов
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listUserOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка юзеров. [Админ и преподаватель]
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Создание нового юзера и профиля для него со всеми данными.
+      operationId: user-create
+      parameters:
+      - description: userBody
+        in: body
+        name: userBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.userBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: группа не найдена | слабый пароль
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "409":
+          description: пользователь с введенным логином уже существует
+      security:
+      - JWTAccess: []
+      summary: Создание нового юзера. [Только админ]
+      tags:
+      - user
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление юзера и его профиля по его id.
+      operationId: user-delete
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Удаление юзера по id. [Только админ]
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      description: Получение юзера со всеми данными по его id.
+      operationId: user-read
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Получение юзера по id. [Только админ]
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Полное обновление профиля юзера, его группы (если студент) и пароля
+        (опционально) по его id.
+      operationId: user-update
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: updateBody
+        in: body
+        name: updateBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal_app_user_controller_http_v1.updateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: неподдерживаемые данные для роли обновляемого пользователя
+            | группа не найдена | слабый пароль
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Обновление юзера по id. [Только админ]
+      tags:
+      - user
+  /user/{id}/password:
+    put:
+      consumes:
+      - application/json
+      description: Смена пароля юзера по его id.
+      operationId: user-password-update
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updatePasswordAdminBody
+        in: body
+        name: updatePasswordAdminBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updatePasswordAdminBody'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Смена пароля юзера. [Только админ]
+      tags:
+      - user
+  /user/me:
+    get:
+      consumes:
+      - application/json
+      description: Получение всей информации о себе (юзер, профиль).
+      operationId: user-me-get
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение информации о себе.
+      tags:
+      - user
+  /user/me/password:
+    put:
+      consumes:
+      - application/json
+      description: Смена своего пароля.
+      operationId: user-me-password-update
+      parameters:
+      - description: updatePasswordBody
+        in: body
+        name: updatePasswordBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updatePasswordBody'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: неверный старый пароль
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "409":
+          description: пароли не должны совпадать
+      security:
+      - JWTAccess: []
+      summary: Смена своего пароля.
+      tags:
+      - user
+  /user/me/profile:
+    put:
+      consumes:
+      - application/json
+      description: Полное обновление своего профиля.
+      operationId: user-me-profile-update
+      parameters:
+      - description: profileBody
+        in: body
+        name: profileBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.profileBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Обновление своего профиля.
+      tags:
+      - user
+produces:
+- application/json
+schemes:
+- http
+securityDefinitions:
+  JWTAccess:
+    description: Access JWT-token. Cookie will automatic add after auth is done.
+    in: cookie
+    name: access
+    type: apiKey
+  JWTRefresh:
+    description: Refresh JWT-token. Cookie will automatic add after auth is done.
+    in: cookie
+    name: refresh
+    type: apiKey
+swagger: "2.0"

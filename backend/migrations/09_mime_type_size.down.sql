@@ -1,0 +1,2 @@
+ALTER TABLE file
+MODIFY COLUMN mime_type VARCHAR(50) NULL DEFAULT "text/plain";

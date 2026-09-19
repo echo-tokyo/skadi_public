@@ -1,0 +1,28 @@
+DROP TABLE IF EXISTS contact;
+
+DROP TABLE IF EXISTS profile;
+
+CREATE TABLE IF NOT EXISTS profile (
+    id BIGINT NOT NULL PRIMARY KEY,
+    fullname VARCHAR(150) NOT NULL,
+    address VARCHAR(255) NULL,
+    contact_id BIGINT NULL,
+    parent_contact_id BIGINT NULL,
+    extra TEXT NULL
+);
+
+CREATE TABLE IF NOT EXISTS contact (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    phone VARCHAR(15) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    CONSTRAINT uni_phone_email UNIQUE (phone, email)
+);
+
+ALTER TABLE profile
+ADD CONSTRAINT profile_user_fk FOREIGN KEY (id) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE profile
+ADD CONSTRAINT profile_contact_fk FOREIGN KEY (contact_id) REFERENCES contact (id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+ALTER TABLE profile
+ADD CONSTRAINT profile_parent_contact_fk FOREIGN KEY (parent_contact_id) REFERENCES contact (id) ON UPDATE CASCADE ON DELETE SET NULL;

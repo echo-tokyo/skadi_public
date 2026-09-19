@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS comment;
+
+CREATE TABLE IF NOT EXISTS comment (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    solution_id BIGINT NOT NULL,
+    role ENUM('student', 'teacher') NOT NULL DEFAULT 'student',
+    message TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE comment
+ADD CONSTRAINT comment_solution_fk FOREIGN KEY (solution_id) REFERENCES solution (id) ON UPDATE CASCADE ON DELETE CASCADE;

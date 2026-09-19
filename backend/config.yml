@@ -1,0 +1,42 @@
+server:
+  port: 8000 # server port
+  shutdown_timeout: 1s # timeout to force shutdown server after receiving an OS signal
+  cors:
+    allowed_origins: "http://127.0.0.1,http://172.17.0.1,http://web-server" # comma-separated allowed origins for cors
+    allowed_methods: "GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS" # comma-separated allowed methods for cors
+    allow_credentials: true # allow credentials for cors if true
+  auth:
+    access_token:
+      ttl: 30m # access JWT-token expiration duration
+      cookie:
+        path: "/api/v1/" # cookie path
+        secure: true # enable cookie secure if true
+        http_only: false # enable cookie HTTP-only if true
+        same_site: "Lax" # cookie same site mode ("None", "Strict" or "Lax")
+    refresh_token:
+      ttl: 24h # refresh JWT-token expiration duration
+      cookie:
+        path: "/api/v1/auth/private/" # cookie path
+        secure: true # enable cookie secure if true
+        http_only: false # enable cookie HTTP-only if true
+        same_site: "Lax" # cookie same site mode ("None", "Strict" or "Lax")
+
+logging:
+  log_level: 1 # 1 - debug, 2 - info (default), 3 - warn, 4 - error, 5 - silent
+  json_format: true # use JSON format if true
+
+cache:
+  host: "127.0.0.1" # cache host
+  port: 6379 # cache port
+
+db:
+  user: "test_user" # db user
+  name: "skadi" # database name
+  host: "127.0.0.1" # db host
+  port: 3306 # db port
+  migration:
+    src: file://migrations # URL to dir with db migrations
+
+media:
+  task_file_dir: "./media/task_files" # dir for task files
+  solution_file_dir: "./media/solution_files" # dir for solution files

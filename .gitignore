@@ -1,0 +1,31 @@
+# environments
+.env
+env/
+*.env
+
+# dev
+backend/temp/
+# dev media
+backend/media/solution_files/*
+!backend/media/solution_files/.keep
+backend/media/task_files/*
+!backend/media/task_files/.keep
+
+# test configs
+!test-stand/**
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vite

@@ -1,0 +1,156 @@
+version: "2"
+
+run:
+  tests: false
+
+linters:
+  default: none
+  enable:
+    - asciicheck
+    - bodyclose
+    - copyloopvar
+    - cyclop
+    - dogsled
+    - dupl
+    - errcheck
+    - errorlint
+    - funlen
+    - ginkgolinter
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - godox
+    - goprintffuncname
+    - gosec
+    - ineffassign
+    - lll
+    - makezero
+    - misspell
+    - mnd
+    - nakedret
+    - nestif
+    - noctx
+    - prealloc
+    - revive
+    - unconvert
+    - unparam
+    - unused
+    - varnamelen
+    - whitespace
+
+  settings:
+    cyclop:
+      max-complexity: 10
+    errorlint:
+      comparison: true
+    goconst:
+      ignore-string-values: .*?%s|%v|%w.*
+      numbers: true
+      ignore-calls: false
+    gocritic:
+      enable-all: true
+    gocyclo:
+      min-complexity: 10
+    lll:
+      line-length: 99
+    nestif:
+      min-complexity: 3
+    prealloc:
+      simple: false
+      for-loops: true
+    whitespace:
+      multi-func: true
+
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - docs
+      - temp
+    rules:
+      - linters: # general accepted var name for type assertions
+          - varnamelen
+        text: "variable name 'ok' is too short for the scope of its usage"
+      - linters: # general accepted var name for wait group
+          - varnamelen
+        text: "variable name 'wg' is too short for the scope of its usage"
+      - linters: # general accepted var name for mutex
+          - varnamelen
+        text: "variable name 'mu' is too short for the scope of its usage"
+      - linters: # general accepted var name for identifier
+          - varnamelen
+        text: "parameter name 'id' is too short for the scope of its usage"
+      - linters: # general accepted var name for db transaction
+          - varnamelen
+        text: "parameter name 'tx' is too short for the scope of its usage"
+
+      - linters: # unnecessary
+          - errcheck
+        text: Error return value of `fmt.Scan` is not checked
+
+      - linters: # swagger comments
+          - lll
+        path: "internal/app/service/server/server.go"
+      - linters: # swagger struct tags
+          - lll
+        path: "internal/app/.*?/controller/http/v1/.*?.go"
+      - linters: # struct tags
+          - lll
+        path: "internal/app/entity"
+
+      - linters: # more clearly
+          - gocritic
+        path: "internal/app/.*?/controller/http/v1/register.go"
+        text: "unnecessaryBlock: block doesn't have definitions, can be simply deleted"
+      - linters: # it's very useful comments
+          - gocritic
+        path: "internal/app/file/repository/repo_db.go"
+        text: "commentedOutCode: may want to remove commented-out code"
+
+      - linters: # similar but different endpoints
+          - dupl
+        path: "internal/app/solution/controller/http/v1/controller_student.go"
+        text: "48-96 lines are duplicate of `internal/app/solution/controller/http/v1/controller_teacher.go:48-96"
+      - linters: # similar but different endpoints
+          - dupl
+        path: "internal/app/solution/controller/http/v1/controller_teacher.go"
+        text: "48-96 lines are duplicate of `internal/app/solution/controller/http/v1/controller_student.go:48-96"
+
+      - linters: # similar but different repo funcs
+          - dupl
+        path: "internal/app/file/repository/repo_db.go"
+        text: "43-93 lines are duplicate of `internal/app/file/repository/repo_db.go:96-146"
+      - linters: # similar but different repo funcs
+          - dupl
+        path: "internal/app/file/repository/repo_db.go"
+        text: "96-146 lines are duplicate of `internal/app/file/repository/repo_db.go:43-93"
+
+      - linters: # more readable
+          - goconst
+        path: cmd/migrator/commands/
+        text: "string `Successfully!` has 3 occurrences, make it a constant"
+      - linters: # more readable
+          - goconst
+        text: "string `/:id` has [3456789] occurrences, make it a constant"
+
+      - linters: # all HTTP-routes registers
+          - funlen
+        path: internal/app/service/server/register.go
+
+issues:
+  fix: false
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - docs
+      - temp
